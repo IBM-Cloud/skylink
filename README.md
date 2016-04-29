@@ -1,7 +1,7 @@
 # skylink
 Skylink is a sample application that lets you connect a [DJI][dji] drone aircraft to the [IBM Cloud][bluemix] with near realtime image analysis leveraging [IBM Cloudant][cloudant], [OpenWhisk][openwhisk], [IBM Watson][watson_visual_recognition], and [Alchemy Vision][alchemy_vision].  
 
-This is a proof of concept use case that demonstrates how low cost/commodity off-the-shelf consumer drones can be integrated into enterprise workflows immediate, leveraging existing technology and infrastructure.
+This is a proof of concept use case that demonstrates how low cost/commodity off-the-shelf consumer drones can be integrated into enterprise workflows immediately, leveraging existing technology and infrastructure.
 
 You can read more about the context and usage of this application in [this blog post on the Bluemix blog][bluemix_dw_blog_post], or by viewing [this free webinar][webinar] that walks through the entire solution.
 
