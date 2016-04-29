@@ -43,6 +43,21 @@ Create a new Node.js app on Bluemix, and configure it to use the following servi
 
 ![screenshot of bluemix app configuration](./github-assets/bluemix-app.jpg)
 
+# Cloudant Database
+
+Once you've configured your app on Bluemix to use the Cloudant NoSQL database, you'll next need to configure it.
+
+1. First, create a new database called ```overwatch```
+2. Next, create a view on the database with the index name ```overwatch.images```, and use the following map function:
+``` 
+function (doc) {
+    if ( doc.type == 'overwatch.image' ) {
+      emit(doc);
+    }
+} 
+```
+![screenshot of cloudant view](./github-assets/cloudant-view.jpg)
+
 
 # iOS Client Project 
 
