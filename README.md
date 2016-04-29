@@ -24,6 +24,12 @@ All development was done using a [DJI Phantom 3 Advanced][dji_phantom] aircraft,
 
 ---
 
+## Application Requirements
+
+* IBM Bluemix account. [Sign up][bluemix_signup_url] for Bluemix, or use an existing account.
+* IBM Bluemix OpenWhisk early access. [Sign up for Bluemix OpenWhisk](https://new-console.ng.bluemix.net/openwhisk). 
+* XCode
+
 *You might notice references to 'overwatch' throughout this project.  That was the original project name, but let's face it, 'overwatch' makes you think of a creepy big-brother concept, so I changed it.  Unfortunately, there are still references to the old name throughout the code.*
 
 
