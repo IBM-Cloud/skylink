@@ -8,6 +8,8 @@ You can read more about the context and usage of this application in [this blog 
 Check out the video below for a quick overview how the application works.    
  
  [![video poster image](./github-assets/video-poster.jpg)][youtbue_video]
+https://youtu.be/BHmo8oWENJo
+
 
 ## General Architecture
 The application connects a [DJI][dji] drone aircraft to [IBM Bluemix][bluemix] by using an iPad to bridge the connection from aircraft to the external network & cloud services.  The aircraft remote control connects directly to the controller using a USB connection.  This allows the aircraft to send a live video stream, captured media, and telemtry data directly to an app running on the iPad.  This also allows the iPad to send control instructions to the aircraft, enabling the app to control what the aircraft is doing.  All communication back and forth between the aircraft and app on the iPad is handled using [DJI's developer toolkit][dji_dev]. 
