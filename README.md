@@ -8,6 +8,7 @@ You can read more about the context and usage of this application in [this blog 
 Check out the video below for a quick overview how the application works.    
  
  [![video poster image](./github-assets/video-poster.jpg)][youtbue_video]
+
 https://youtu.be/BHmo8oWENJo
 
 
