@@ -1,0 +1,5 @@
+{
+  //put your auth credentials from bluemix here if you want to use them in Node.js locally
+  "cloudantNoSQLDB": [],
+  "visual_recognition": []
+}

@@ -1,0 +1,19 @@
+include ./header.jade
+
+div(class="container-fluid")
+    each row in body.rows
+        div(class="listCell")
+            a(href="./" + row.id)
+                div(class="callout" style="padding:2px;")
+                    p= row.key.timestamp
+                    img(src="./" + row.id + "/attachments/thumbnail.jpg" style="max-width:100%; width:100%; max-height:30%;")
+                    if row.key.analysis == undefined
+                        p Analyzed: NO
+                    else
+                        p Analyzed: YES
+                            if row.key.analysis.size != undefined
+                                span= ", " + row.key.analysis.size.width + " x " + row.key.analysis.size.height
+
+include ./footer.jade
+               
+                        

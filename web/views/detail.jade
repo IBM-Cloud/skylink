@@ -1,0 +1,151 @@
+include ./header.jade
+
+link(rel="stylesheet" href="https://js.arcgis.com/4.0beta3/esri/css/main.css")
+script(src="https://js.arcgis.com/4.0beta3/")
+
+div(class="container-fluid" )
+    div(class="col-md-7 imagecell") 
+        div(class="panel panel-default")
+            div(class="panel-heading")
+                a(target="_blank" href="./" + body._id + "/attachments/image.jpg" class="white") (view full resolution in a new window)
+            div(class="panel-body nopad")
+                img(src="./" + body._id + "/attachments/image.jpg" style="max-width:100%")
+           
+    div(class="col-md-5 mapcell")
+        div(class="panel panel-default")
+            div(class="panel-heading")= "Aircraft: " + body.aircraft
+            
+            div(class="panel-body mapcell")
+                div(class="col-md-4 bold nopad") Timestamp:
+                div(class="col-md-8 nopad")= body.timestamp
+                div(class="col-md-4 bold nopad") Longitude:
+                div(class="col-md-8 nopad")= body.longitude
+                div(class="col-md-4 bold nopad") Latitude:
+                div(class="col-md-8 nopad")= body.latitude
+                div(class="col-md-4 bold nopad") Altitude:
+                div(class="col-md-8 nopad")= body.altitude + " (m)"
+                div(class="col-md-4 bold nopad") Heading:
+                div(class="col-md-8 nopad")= body.heading
+                div(class="col-md-4 bold nopad") Camera:
+                div(class="col-md-8 nopad")
+                    div(class="col-md-6 nopad")!= "Head: " + body.cameraHeading + " <br/>Pitch: " + body.cameraPitch
+                    div(class="col-md-6 relative")
+                        div(class="arrow-container")
+                            img(src="/public/assets/arrow-horizontal.png" class="arrow")
+                            img(src="/public/assets/arrow-active.png" class="arrow" style="transform: rotate(" + -body.cameraPitch + "deg)")
+                        div(class=" heading-container")
+                            img(src="/public/assets/map-marker.png" class="arrow" style="top:8px; transform: rotate(" + (body.cameraHeading-0) + "deg)")
+    
+        div
+            div(class="panel panel-default")
+                div(class="panel-body nopad")
+                    div(id="map" class="mapcell")   
+        
+        script.
+            require([
+                "esri/Map",
+                "esri/views/MapView",
+                "esri/symbols/PictureMarkerSymbol",
+                "esri/layers/GraphicsLayer",
+                "esri/Graphic",
+                "esri/geometry/Point",
+                "dojo/domReady!"
+            ],
+            function(Map, MapView, PictureMarkerSymbol, GraphicsLayer, Graphic, Point) {
+                
+                var url = window.location.href;
+                var tokens = url.split("/");
+                var prefix = tokens[0] + "//" + tokens[2]
+                    
+                var map = new Map({
+                    basemap: "topo",
+                });
+                
+                var view = new MapView({
+                    container: "map",
+                    map: map,
+                    scale: 5000,
+                    center: [!{body.longitude}, !{body.latitude}]
+                });
+                
+                var graphicsLayer = new GraphicsLayer();
+                map.add(graphicsLayer);
+                
+                var geometry = new Point({
+                            "longitude": !{body.longitude},
+                            "latitude": !{body.latitude}})
+                            
+                var symbol = new PictureMarkerSymbol({ "angle": !{body.cameraHeading},
+                            "xoffset": 0,
+                            "yoffset": 0,
+                            "url": prefix + "/public/assets/map-marker.png",
+                            "contentType": "image/png",
+                            "width": 32,
+                            "height": 32
+                    })
+                    
+                graphicsLayer.add(new Graphic(geometry, symbol))
+            });
+ 
+    div(class="col-md-5 analysisContainer")  
+
+        if body.analysis 
+        
+            div(class="row callout warning")
+                div(class="col-md-3") 
+                    h4 Watson Image Tagging
+                div(class="col-md-9") 
+                    if body.analysis.visual_recognition.images.length > 0
+                        each image in body.analysis.visual_recognition.images
+                            each label in image.labels
+                                span(class="tag watson") 
+                                    span(class="tag-label")!= label.label_name.replace(/ /g, '&nbsp;')
+                                    span(class="tag-confidence")= (label.label_score*100).toFixed(2)+ "%"
+                    else 
+                        span No tags were recognized in this image.
+                
+            div(class="row callout error")
+                div(class="col-md-3") 
+                    h4 Alchmey Image Tagging
+                div(class="col-md-9") 
+                    if body.analysis.image_keywords.imageKeywords.length > 0
+                        each keyword in body.analysis.image_keywords.imageKeywords
+                            span(class="tag alchemy") 
+                                span(class="tag-label")!= keyword.text.replace(/ /g, '&nbsp;')
+                                span(class="tag-confidence")= (keyword.score*100).toFixed(2)+ "%"
+                                
+                                if keyword.knowledgeGraph
+                                    span(class="tag-confidence")!= keyword.knowledgeGraph.typeHierarchy.replace(/ /g, '&nbsp;')
+                    else 
+                        span No tags were recognized in this image.
+        
+            div(class="row callout warning")
+        
+                div(class="col-md-3") 
+                    h4 Alchemy Facial Recognition
+                div(class="col-md-9") 
+                    if body.analysis.face_detection.imageFaces.length > 0
+                        table(class="table table-condensed")
+                            tr
+                                th(style="border-top:none;") &nbsp; 
+                                th(style="border-top:none;") Classification
+                                th(style="border-top:none;") Confidence
+                            each face, index in body.analysis.face_detection.imageFaces
+                                tr
+                                    td(style="width:100px" rowspan="2")
+                                        img(src="./" + body._id + "/attachments/face" + index + ".jpg" style="width:100px")
+                                    td= face.gender.gender
+                                    td= (face.gender.score*100).toFixed(2)
+                                tr
+                                    td= face.age.ageRange
+                                    td= (face.age.score*100).toFixed(2)
+                    else 
+                        span No faces were recognized in this image.
+            
+        else   
+            div(class="row callout error")
+                h4 Analysis has not been performed on this record yet.   
+    
+div(class="col-md-12")  &nbsp;               
+            
+include ./footer.jade             

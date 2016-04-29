@@ -1,0 +1,13 @@
+---
+applications:
+- name: skylink
+  memory: 256M
+  instances: 2
+  hosts:
+  - overwatch
+  - skylink
+  domain: mybluemix.net
+  services:
+  - Cloudant NoSQL DB-1y
+  - Visual Recognition-03
+  - AlchemyAPI-3f
