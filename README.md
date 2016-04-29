@@ -10,11 +10,11 @@ Check out the video below for a quick overview how the application works.
  [![video poster image](./github-assets/video-poster.jpg)][youtbue_video]
 
 ## General Architecture
-The application connects a [DJI][dji] drone aircraft to [Bluemix][bluemix] by using an iPad to bridge the connection from aircraft to the external network.  The aircraft remote control connects directly to the controller using a USB connection.  This allows the aircraft to send a live video stream, captured media, and telemtry data directly to an app running on the iPad.  This also allows the iPad to send control instructions to the aircraft, enabling the app to control what the aircraft is doing.  All communication back and forth between the aircraft and app on the iPad is handled using [DJI's developer toolkit][dji_dev]. 
+The application connects a [DJI][dji] drone aircraft to [IBM Bluemix][bluemix] by using an iPad to bridge the connection from aircraft to the external network & cloud services.  The aircraft remote control connects directly to the controller using a USB connection.  This allows the aircraft to send a live video stream, captured media, and telemtry data directly to an app running on the iPad.  This also allows the iPad to send control instructions to the aircraft, enabling the app to control what the aircraft is doing.  All communication back and forth between the aircraft and app on the iPad is handled using [DJI's developer toolkit][dji_dev]. 
 
 ![screenshot of skylink app running on iPad](./github-assets/architecture.png)
 
-The aircraft captures telemtry data and images (either full resolution images or video frame grabs) and sstores them locally on the iPad using [Cloudant Sync][coudant_sync] - This prevents data loss if you are flying in an area without any network connectivity.  When there is data connectivity, the data is automatically replicated up to the [Cloudant][cloudant] service.  Saving data into Cloudant automatically triggers [OpenWhisk][openwhisk] actions to process the images and data using [Watson Visual Recognition][watson_visual_recognition] and [Alchmey Vision][alchemy_vision] services.  Once all the data has been processed, it is available through a web interface powered by Node.js running on [IBM Bluemix][bluemix]. 
+The app captures aircraft telemtry data and images (either full resolution images or video frame grabs) and stores them locally on the iPad using [Cloudant Sync][coudant_sync] - This prevents data loss if you are flying in an area without any network connectivity.  When there is data connectivity, the data is automatically replicated up to the [Cloudant][cloudant] service.  Saving data into Cloudant automatically triggers [OpenWhisk][openwhisk] actions to process the images and data using [Watson Visual Recognition][watson_visual_recognition] and [Alchmey Vision][alchemy_vision] services.  Once all the data has been processed, it is available through a web interface powered by Node.js running on [IBM Bluemix][bluemix]. 
 
 ## The Aircraft
 
@@ -24,8 +24,7 @@ All development was done using a [DJI Phantom 3 Advanced][dji_phantom] aircraft,
 
 ---
 
-| You might notice references to 'overwatch' throughout this project.  That was the original project name, but let's face it, 'overwatch' makes you think of a creepy big-brother concept, so I changed it.  Unfortunately, there are still references to the old name throughout the code |
-| -- |
+*You might notice references to 'overwatch' throughout this project.  That was the original project name, but let's face it, 'overwatch' makes you think of a creepy big-brother concept, so I changed it.  Unfortunately, there are still references to the old name throughout the code.*
 
 
 # Bluemix Services
@@ -43,8 +42,8 @@ Create a new Node.js app on Bluemix, and configure it to use the following servi
 
 The iOS application is the bridge from aircraft to the cloud.  The iPad connects directly to the aircraft controller over USB, and can communicate to the cloud using wifi or 3G/4G cellular networks.  It provides a first-person video view, lets you view telemetry data, and has two options for capturing images from the aircraft:
 
-* Capture a full resolution (4000x3000) image using the camera funcionality (slow)
-* Capture a screen grab from the live video stream (720p MAX, low quality) (very fast)   
+* Capture a full resolution (4000x3000) image using the camera funcionality (slow and requires interruption to live stream)
+* Capture a screen grab from the live video stream (720p MAX, low quality) (very fast, but not as high quality)   
 
 ![screenshot of skylink app running on iPad](./github-assets/ios-client.png)
 
@@ -136,7 +135,9 @@ node app.js
 To run the Node.js application on Bluemix, you only need to push the code to the Bluemix applicaiton instance.
 From inside the ```web``` directory, run the following command to push the app up to Bluemix:
 
-```cf push```
+```
+cf push
+```
 
 *This will use the app name configued within ```manifest.yml```*    
 
