@@ -177,14 +177,31 @@ class ViewController: DJIBaseViewController, DJICameraDelegate, DJIFlightControl
                         self?.showAlertResult("ERROR: setCameraMode:withCompletion:\(error!.description)")
                     }
                     else {
-                        // Normally, once an operation is finished, the camera still needs some time to finish up
-                        // all the work. It is safe to delay the next operation after an operation is finished.
-                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), {() -> Void in
+                        
+                        
+                        camera?.setPhotoFileFormat(DJICameraPhotoFileFormat.JPEG, withCompletion: {[weak self](error: NSError?) -> Void in
                             
-                            //     self?.captureButton.enabled = true
-                            self!.captureHighResButton.enabled = true;
-                            self!.captureLowResButton.enabled = true;
+                            self?.debug("Set image format to JPEG")
+                            
+                            camera?.setPhotoQuality(DJICameraPhotoQuality.Normal, withCompletion: {[weak self](error: NSError?) -> Void in
+                                
+                                self?.debug("Set image resolution to NORMAL")
+                                
+                                
+                                // Normally, once an operation is finished, the camera still needs some time to finish up
+                                // all the work. It is safe to delay the next operation after an operation is finished.
+                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), {() -> Void in
+                                    
+                                    //     self?.captureButton.enabled = true
+                                    self!.captureHighResButton.enabled = true;
+                                    self!.captureLowResButton.enabled = true;
+                                })
+                            })
                         })
+                        
+                        
+                        
+                        
                     }
                 })
             }
@@ -369,7 +386,8 @@ class ViewController: DJIBaseViewController, DJICameraDelegate, DJIFlightControl
         // 720p is max resolution for feed from aircraft, 
         // so create an image snapshot no more than 720 pixels high
         // and add jpg compression for faster across-the-wire transmission
-        let snapshot = self.fpvView.scaledSnapshot(720.0)
+        var screenScale = Float(UIScreen.mainScreen().scale)
+        let snapshot = self.fpvView.scaledSnapshot(480.0/screenScale)
         if let data = UIImageJPEGRepresentation(snapshot, 0.75) {
             
             let filename = getDocumentsDirectory().stringByAppendingPathComponent("\(now.timeIntervalSince1970)")
@@ -489,8 +507,38 @@ class ViewController: DJIBaseViewController, DJICameraDelegate, DJIFlightControl
             
             self.debug("Saving high resolution data to local storage")
             let now = NSDate()
+            var scaledData:NSData;
+            
+            //todo: make resize optional
+            if (true) {
+                
+                self.debug("Reducing image size to optimize network performance.")
+                
+                //resize image and reduce quality to optimize network performance
+                let image = UIImage.init(data: data)
+                
+                let screenScale = UIScreen.mainScreen().scale
+                let targetScale = 0.5/screenScale
+                let size = CGSizeApplyAffineTransform(image!.size, CGAffineTransformMakeScale(targetScale,targetScale))
+                let hasAlpha = false
+                let scale: CGFloat = 0.0 // Automatically use scale factor of main screen
+                
+                UIGraphicsBeginImageContextWithOptions(size, !hasAlpha, scale)
+                image!.drawInRect(CGRect(origin: CGPointZero, size: size))
+                
+                let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                
+                scaledData = UIImageJPEGRepresentation (scaledImage, 0.75)!;
+            }
+            else {
+                scaledData = data
+            }
+            
+            
+            self.debug("Saving high resolution data to local storage")
             let filename = getDocumentsDirectory().stringByAppendingPathComponent("\(now.timeIntervalSince1970)")
-            data.writeToFile(filename, atomically: true)
+            scaledData.writeToFile(filename, atomically: true)
             
             DataManager.sharedInstance.saveData(aircraftState, attachmentFile: filename)
         }
@@ -635,7 +683,7 @@ extension ViewController : DJISDKManagerDelegate
         debug("Registered, awaiting connection...")
         #if arch(i386) || arch(x86_64) ||
             //Simulator
-            DJISDKManager.enterDebugModeWithDebugId("192.168.1.10")
+            DJISDKManager.enterDebugModeWithDebugId("192.168.1.9")
         #else
             //Device
             DJISDKManager.startConnectionToProduct()
