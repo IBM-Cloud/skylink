@@ -41,9 +41,7 @@ function install() {
   echo "Adding VCAP_SERVICES as parameter"
   wsk package update overwatch\
     -p cloudantUrl https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host\
-    -p alchemyKey $ALCHEMY_key\
-    -p watsonUsername $WATSON_username\
-    -p watsonPassword $WATSON_password\
+    -p watsonKey $WATSON_key\
     -p cloudantDbName $CLOUDANT_db
     
   # we will need to listen to cloudant event
@@ -102,9 +100,7 @@ function showenv() {
   echo CLOUDANT_password=$CLOUDANT_password
   echo CLOUDANT_host=$CLOUDANT_host
   echo CLOUDANT_db=$CLOUDANT_db
-  echo ALCHEMY_key=$ALCHEMY_key
-  echo WATSON_username=$WATSON_username
-  echo WATSON_password=$WATSON_password
+  echo WATSON_key=$WATSON_key
   echo -e "${NC}"
 }
 

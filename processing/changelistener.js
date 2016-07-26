@@ -31,6 +31,9 @@ function main(doc) {
     doc._attachments.hasOwnProperty("image.jpg") &&
     !doc._attachments.hasOwnProperty("thumbnail.jpg")) {
     // trigger the analysis
+    
+    console.log(doc)
+    
     asyncCallAction("/" + doc.targetNamespace +"/overwatch/analysis", doc);
     return whisk.async();
   }
