@@ -93,53 +93,50 @@ div(class="container-fluid" )
         
             div(class="row callout warning")
                 div(class="col-md-3") 
-                    h4 Watson Image Tagging
+                    h4 Watson Visual Recognition
                 div(class="col-md-9") 
-                    if body.analysis.visual_recognition.images.length > 0
-                        each image in body.analysis.visual_recognition.images
-                            each label in image.labels
-                                span(class="tag watson") 
-                                    span(class="tag-label")!= label.label_name.replace(/ /g, '&nbsp;')
-                                    span(class="tag-confidence")= (label.label_score*100).toFixed(2)+ "%"
+                    if body.analysis.image_classify.images && body.analysis.image_classify.images.length > 0
+                        each image in body.analysis.image_classify.images
+                            each classifier in image.classifiers
+                                div
+                                    div= classifier.name
+                                each classification in classifier.classes    
+                                    span(class="tag watson") 
+                                        if classification.type_hierarchy
+                                            span(class="tag-label")!= classification.type_hierarchy.replace(/ /g, '&nbsp;')
+                                            span(class="tag-label-center")!= classification.class.replace(/ /g, '&nbsp;')
+                                        else 
+                                            span(class="tag-label")!= classification.class.replace(/ /g, '&nbsp;')
+                                        span(class="tag-confidence")= (classification.score*100).toFixed(2)+ "%"
+                    else if body.analysis.image_classify.status
+                        div
+                            div!= "<b>" + body.analysis.image_classify.status + ":</b> " + body.analysis.image_classify.statusInfo
                     else 
                         span No tags were recognized in this image.
-                
-            div(class="row callout error")
-                div(class="col-md-3") 
-                    h4 Alchmey Image Tagging
-                div(class="col-md-9") 
-                    if body.analysis.image_keywords.imageKeywords.length > 0
-                        each keyword in body.analysis.image_keywords.imageKeywords
-                            span(class="tag alchemy") 
-                                span(class="tag-label")!= keyword.text.replace(/ /g, '&nbsp;')
-                                span(class="tag-confidence")= (keyword.score*100).toFixed(2)+ "%"
-                                
-                                if keyword.knowledgeGraph
-                                    span(class="tag-confidence")!= keyword.knowledgeGraph.typeHierarchy.replace(/ /g, '&nbsp;')
-                    else 
-                        span No tags were recognized in this image.
-        
+            
             div(class="row callout warning")
-        
-                div(class="col-md-3") 
-                    h4 Alchemy Facial Recognition
-                div(class="col-md-9") 
-                    if body.analysis.face_detection.imageFaces.length > 0
+                div(class="col-md-3")
+                    h4 Watson Facial Recognition
+                div(class="col-md-9")
+                    if body.analysis.face_detection.images && body.analysis.face_detection.images[0].faces.length > 0
                         table(class="table table-condensed")
                             tr
-                                th(style="border-top:none;") &nbsp; 
+                                th(style="border-top:none;") &nbsp;
                                 th(style="border-top:none;") Classification
                                 th(style="border-top:none;") Confidence
-                            each face, index in body.analysis.face_detection.imageFaces
+                            each face, index in body.analysis.face_detection.images[0].faces
                                 tr
                                     td(style="width:100px" rowspan="2")
                                         img(src="./" + body._id + "/attachments/face" + index + ".jpg" style="width:100px")
                                     td= face.gender.gender
                                     td= (face.gender.score*100).toFixed(2)
                                 tr
-                                    td= face.age.ageRange
+                                    td= face.age.min +" - "+ face.age.max
                                     td= (face.age.score*100).toFixed(2)
-                    else 
+                    else if body.analysis.face_detection.status
+                        div
+                            div!= "<b>" + body.analysis.face_detection.status + ":</b> " + body.analysis.face_detection.statusInfo
+                    else
                         span No faces were recognized in this image.
             
         else   

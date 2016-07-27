@@ -152,6 +152,13 @@ a .callout:hover {
     border-right:1px solid #777;
 }
 
+.tag-label-center {
+    padding: 4px;
+    padding-right:8px;
+    border-left:1px solid #CCC;
+    border-right:1px solid #777;
+}
+
 .tag-confidence {
     padding: 4px;
     padding-left:8px;
@@ -192,5 +199,5 @@ a .callout:hover {
 
 .listCell img {
     
-    max-height:240px;
+    max-height:210px;
 }

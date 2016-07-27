@@ -16,7 +16,7 @@ if( process.env.VCAP_SERVICES ) {
 }
 
 cloudantCredentials = environment['cloudantNoSQLDB'][0].credentials
-vrCredentials = environment['visual_recognition'][0].credentials
+vrCredentials = environment['watson_vision_combined'][0].credentials
 
 // Initialize Cloudant DB
 var cloudant = Cloudant(cloudantCredentials.url);
