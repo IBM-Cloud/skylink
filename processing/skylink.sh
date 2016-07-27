@@ -54,17 +54,18 @@ function install() {
     -p host $CLOUDANT_host
 
   echo "Creating trigger"
-  wsk trigger create overwatch-cloudant-trigger --feed overwatch-cloudant/changes -p dbname $CLOUDANT_db -p includeDoc true
+  wsk trigger create overwatch-cloudant-update-trigger --feed overwatch-cloudant/changes -p dbname $CLOUDANT_db -p includeDoc true
 
   echo "Creating actions"
   wsk action create overwatch/analysis analysis.js
+  wsk action create overwatch/dataCleaner dataCleaner.js
   
   echo "Creating change listener action"
   wsk action create overwatch-cloudant-changelistener changelistener.js\
    -p targetNamespace $CURRENT_NAMESPACE
     
   echo "Enabling change listener"
-  wsk rule create overwatch-rule overwatch-cloudant-trigger overwatch-cloudant-changelistener --enable
+  wsk rule create overwatch-rule overwatch-cloudant-update-trigger overwatch-cloudant-changelistener --enable
   
   echo -e "${GREEN}Install Complete${NC}"
   wsk list
@@ -75,6 +76,7 @@ function uninstall() {
   
   echo "Removing actions..."
   wsk action delete overwatch/analysis
+  wsk action delete overwatch/dataCleaner
   
   echo "Removing rule..."
   wsk rule disable overwatch-rule
@@ -84,7 +86,7 @@ function uninstall() {
   wsk action delete overwatch-cloudant-changelistener
   
   echo "Removing trigger..."
-  wsk trigger delete overwatch-cloudant-trigger
+  wsk trigger delete overwatch-cloudant-update-trigger
   
   echo "Removing packages..."
   wsk package delete overwatch-cloudant
