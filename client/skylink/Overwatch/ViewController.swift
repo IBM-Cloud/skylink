@@ -48,7 +48,7 @@ class ViewController: DJIBaseViewController, DJICameraDelegate, DJIFlightControl
     
     var pendingAircraftState: NSMutableDictionary? = nil
     
-    let APP_KEY = "6230781d3b55bc83403fe6e4"
+    let APP_KEY = "" // put your DJI API Key here
     
     override func viewDidLoad() {
         
@@ -83,10 +83,9 @@ class ViewController: DJIBaseViewController, DJICameraDelegate, DJIFlightControl
         self.getCameraMode()
         self.isSettingMode = false
         
-        //fc = self.fetchFlightController()
-        
         
         VideoPreviewer.instance().start()
+        VideoPreviewer.instance().setView(self.fpvView)
         // captureButton.enabled = false
         getCameraMode()
         
@@ -102,7 +101,7 @@ class ViewController: DJIBaseViewController, DJICameraDelegate, DJIFlightControl
         if camera != nil {
             camera!.delegate = nil
         }
-        VideoPreviewer.instance().stop();
+        //VideoPreviewer.stop();
         VideoPreviewer.instance().unSetView()
         VideoPreviewer.instance().reset()
         
@@ -144,12 +143,14 @@ class ViewController: DJIBaseViewController, DJICameraDelegate, DJIFlightControl
         debug("getCameraMode")
         let camera: DJICamera? = self.fetchCamera()
         if camera != nil {
-            
             camera?.getCameraModeWithCompletion({[weak self](mode: DJICameraMode, error: NSError?) -> Void in
                 
                 if error != nil {
                     self?.debug("ERROR: getCameraModeWithCompletion::\(error!.description)")
-                    self?.showAlertResult("ERROR: getCameraModeWithCompletion::\(error!.description)")
+                    //self?.showAlertResult("ERROR: getCameraModeWithCompletion::\(error!.description)")
+                    
+                    //attempt to get camera mode again if it failed the first time
+                    self!.getCameraMode()
                 }
                 else if mode == DJICameraMode.ShootPhoto {
                     self!.captureHighResButton.enabled = true;
@@ -249,7 +250,7 @@ class ViewController: DJIBaseViewController, DJICameraDelegate, DJIFlightControl
         }
         
         if let fc = flightController {
-            heading = "\(fc.compass.heading)"
+            heading = "\(fc.compass!.heading)"
             
         }
         
@@ -287,7 +288,7 @@ class ViewController: DJIBaseViewController, DJICameraDelegate, DJIFlightControl
                 aircraftMapAnnotation!.coordinate = CLLocationCoordinate2D(latitude: state.aircraftLocation.latitude, longitude: state.aircraftLocation.longitude)
                 
                 if let fc = flightController {
-                    let radians = (fc.compass.heading) / 180.0 * M_PI
+                    let radians = (fc.compass!.heading) / 180.0 * M_PI
                     aircraftMapMarker!.transform = CGAffineTransformMakeRotation(CGFloat(radians))
                 }
             }
@@ -343,7 +344,7 @@ class ViewController: DJIBaseViewController, DJICameraDelegate, DJIFlightControl
             x = String(format: "%5f", state.velocityX)
             y = String(format: "%5f", state.velocityY)
             z = String(format: "%5f", state.velocityZ)
-            heading = "\(fc.compass.heading)"
+            heading = "\(fc.compass!.heading)"
         }
         
         let now = NSDate()
@@ -386,7 +387,7 @@ class ViewController: DJIBaseViewController, DJICameraDelegate, DJIFlightControl
         // 720p is max resolution for feed from aircraft, 
         // so create an image snapshot no more than 720 pixels high
         // and add jpg compression for faster across-the-wire transmission
-        var screenScale = Float(UIScreen.mainScreen().scale)
+        let screenScale = Float(UIScreen.mainScreen().scale)
         let snapshot = self.fpvView.scaledSnapshot(480.0/screenScale)
         if let data = UIImageJPEGRepresentation(snapshot, 0.75) {
             
@@ -529,7 +530,7 @@ class ViewController: DJIBaseViewController, DJICameraDelegate, DJIFlightControl
                 let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
                 UIGraphicsEndImageContext()
                 
-                scaledData = UIImageJPEGRepresentation (scaledImage, 0.75)!;
+                scaledData = UIImageJPEGRepresentation (scaledImage!, 0.75)!;
             }
             else {
                 scaledData = data
@@ -643,8 +644,16 @@ class ViewController: DJIBaseViewController, DJICameraDelegate, DJIFlightControl
     func camera(camera: DJICamera, didReceiveVideoData videoBuffer: UnsafeMutablePointer<UInt8>, length size: Int){
         let pBuffer = UnsafeMutablePointer<UInt8>.alloc(size)
         memcpy(pBuffer, videoBuffer, size)
-        VideoPreviewer.instance().dataQueue.push(pBuffer, length: Int32(size))
+        //VideoPreviewer.instance().dataQueue.push(pBuffer, length: Int32(size))
+        VideoPreviewer.instance().push(pBuffer, length: Int32(size))
     }
+    
+    
+   /* func camera(camera: DJICamera, didReceiveVideoData videoBuffer: UnsafeMutablePointer<UInt8>, length size: Int){
+        let pBuffer = UnsafeMutablePointer<UInt8>.alloc(size)
+        memcpy(pBuffer, videoBuffer, size)
+        VideoPreviewer.instance().push(pBuffer, length: Int32(size))
+    }*/
     /*
     func camera(camera: DJICamera, didUpdateSystemState systemState: DJICameraSystemState) {
         if systemState.mode == DJICameraMode.Playback || systemState.mode == DJICameraMode.MediaDownload {
@@ -683,7 +692,7 @@ extension ViewController : DJISDKManagerDelegate
         debug("Registered, awaiting connection...")
         #if arch(i386) || arch(x86_64) ||
             //Simulator
-            DJISDKManager.enterDebugModeWithDebugId("192.168.1.9")
+            DJISDKManager.enterDebugModeWithDebugId("192.168.1.15")
         #else
             //Device
             DJISDKManager.startConnectionToProduct()

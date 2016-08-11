@@ -1,47 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11191" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11156"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Overwatch" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Skylink" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" alpha="0.84999999999999998" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Eye-large.png" translatesAutoresizingMaskIntoConstraints="NO" id="ug5-Ih-hen">
-                                <rect key="frame" x="0.0" y="0.0" width="590" height="600"/>
-                            </imageView>
+                            <imageView userInteractionEnabled="NO" alpha="0.84999999999999998" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Eye-large.png" translatesAutoresizingMaskIntoConstraints="NO" id="ug5-Ih-hen"/>
                             <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="66O-85-0o2">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                                <color key="backgroundColor" red="0.101010101" green="0.101010101" blue="0.101010101" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.101010101" green="0.101010101" blue="0.101010101" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U8q-pW-ndV">
-                                <rect key="frame" x="412" y="215" width="188" height="385"/>
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="location" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="50v-CB-Skc">
-                                        <rect key="frame" x="0.0" y="0.0" width="188" height="251"/>
-                                        <color key="textColor" red="0.40000000600000002" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" red="0.40000000600000002" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
                                     <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" scrollEnabled="NO" rotateEnabled="NO" pitchEnabled="NO" showsBuildings="NO" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TGM-rK-a8v">
-                                        <rect key="frame" x="0.0" y="259" width="188" height="126"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="126" id="Tvq-2J-jvp"/>
                                         </constraints>
                                     </mapView>
                                 </subviews>
-                                <color key="backgroundColor" red="0.085858585860000003" green="0.085858585860000003" blue="0.085858585860000003" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.085858585860000003" green="0.085858585860000003" blue="0.085858585860000003" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="50v-CB-Skc" firstAttribute="leading" secondItem="U8q-pW-ndV" secondAttribute="leading" id="IFb-kt-Ln8"/>
                                     <constraint firstAttribute="width" constant="188" id="ISS-Dt-7TV"/>
@@ -55,10 +49,9 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MTa-W8-MdD">
-                                <rect key="frame" x="0.0" y="0.0" width="225" height="600"/>
                                 <subviews>
-                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="EIS-Tb-xe7">
-                                        <rect key="frame" x="142" y="557" width="75" height="29"/>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="EIS-Tb-xe7">
+                                        <frame key="frameInset" minX="142" minY="557" width="75" height="29"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="28" id="a8L-rE-wRE"/>
                                             <constraint firstAttribute="width" constant="75" id="jMq-on-Xzw"/>
@@ -67,34 +60,34 @@
                                             <segment title="SW"/>
                                             <segment title="HW"/>
                                         </segments>
-                                        <color key="tintColor" red="0.40000000600000002" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="tintColor" red="0.40000000600000002" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <connections>
                                             <action selector="onSegmentControlValueChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="lTY-83-ZFQ"/>
                                         </connections>
                                     </segmentedControl>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Video Decoder:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FUz-rE-zDj">
-                                        <rect key="frame" x="15" y="560" width="119" height="21"/>
-                                        <color key="tintColor" red="0.40000000600000002" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Video Decoder:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FUz-rE-zDj">
+                                        <frame key="frameInset" minX="15" minY="560" width="119" height="21"/>
+                                        <color key="tintColor" red="0.40000000600000002" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="119" id="6ir-6X-zAu"/>
                                             <constraint firstAttribute="height" constant="21" id="U2h-2u-4pN"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <color key="textColor" red="0.40000000600000002" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" red="0.40000000600000002" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" delaysContentTouches="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="4fM-CM-eCh">
-                                        <rect key="frame" x="0.0" y="0.0" width="225" height="549"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" delaysContentTouches="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="4fM-CM-eCh">
+                                        <frame key="frameInset" width="225" height="549"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                         <string key="text" base64-UTF8="YES">
 IAoKCiA
 </string>
-                                        <color key="textColor" red="0.40000000600000002" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" red="0.40000000600000002" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
                                 </subviews>
-                                <color key="backgroundColor" red="0.085858585860000003" green="0.085858585860000003" blue="0.085858585860000003" alpha="0.5" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.085858585860000003" green="0.085858585860000003" blue="0.085858585860000003" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="FUz-rE-zDj" firstAttribute="leading" secondItem="MTa-W8-MdD" secondAttribute="leading" constant="15" id="Via-4w-css"/>
                                     <constraint firstItem="EIS-Tb-xe7" firstAttribute="leading" secondItem="FUz-rE-zDj" secondAttribute="trailing" constant="8" id="Wrl-AS-TTN"/>
@@ -108,42 +101,39 @@ IAoKCiA
                                 </constraints>
                             </view>
                             <imageView userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="target-finder.png" translatesAutoresizingMaskIntoConstraints="NO" id="ed5-1d-FAj">
-                                <rect key="frame" x="275" y="275" width="50" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="OZa-sb-EKD"/>
                                     <constraint firstAttribute="width" constant="50" id="bUx-bK-yLJ"/>
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BUk-kY-uNG">
-                                <rect key="frame" x="427" y="25" width="154" height="36"/>
-                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="36" id="72N-fu-8ho"/>
                                     <constraint firstAttribute="width" constant="154" id="eiV-rv-ZCg"/>
                                 </constraints>
                                 <state key="normal" title="Capture High Res">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="onHighResButtonPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0OG-dF-b2Y"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xqH-dd-ZHt">
-                                <rect key="frame" x="427" y="75" width="154" height="36"/>
-                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="154" id="aoQ-lh-Baj"/>
                                     <constraint firstAttribute="height" constant="36" id="ayp-Dq-7v0"/>
                                 </constraints>
                                 <state key="normal" title="Capture Low Res">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="onLowResButtonPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ugE-Fg-pSl"/>
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" red="0.10101010101010088" green="0.10101010101010088" blue="0.10101010101010088" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.10101010101010088" green="0.10101010101010088" blue="0.10101010101010088" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="ed5-1d-FAj" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="1pN-ae-h1N"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="66O-85-0o2" secondAttribute="bottom" id="2dp-9e-A6d"/>
