@@ -71,7 +71,7 @@ The iOS application is the bridge from aircraft to the cloud.  The iPad connects
 
 ![screenshot of skylink app running on iPad](./github-assets/ios-client.png)
 
-The iOS Client project leverages [DJI's developer SDK][dji-sdk] to communicate with the aircraft.  In particular, this app was developed using [version 3.1][dji-sdk-specfic]. 
+The iOS Client project leverages [DJI's developer SDK][dji-sdk] to communicate with the aircraft.  In particular, this app was developed using [version 3.2][dji-sdk-specfic]. 
 
 *Note: It is very important to make sure that the aircraft firmware is in synch and using the same version of the SDK, otherwise aircraft features may not operate as expected.* 
 
@@ -212,7 +212,7 @@ Deployment tracking can be disabled by removing require("cf-deployment-tracker-c
 [dji_inspire]: http://www.dji.com/products/inspire
 [dji_dev]: http://developer.dji.com
 [dji-sdk]: https://github.com/dji-sdk/Mobile-SDK-iOS
-[dji-sdk-specfic]: https://github.com/dji-sdk/Mobile-SDK-iOS/releases/tag/v3.1
+[dji-sdk-specfic]: https://github.com/dji-sdk/Mobile-SDK-iOS/releases/tag/v3.2
 [dji-apps]: http://developer.dji.com/user/apps/#all
 [bluemix_dw_blog_post]: https://developer.ibm.com/bluemix/
 [youtbue_video]: https://youtu.be/BHmo8oWENJo
