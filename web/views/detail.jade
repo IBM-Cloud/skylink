@@ -98,16 +98,17 @@ div(class="container-fluid" )
                     if body.analysis.image_classify.images && body.analysis.image_classify.images.length > 0
                         each image in body.analysis.image_classify.images
                             each classifier in image.classifiers
-                                div
-                                    div= classifier.name
-                                each classification in classifier.classes    
-                                    span(class="tag watson") 
-                                        if classification.type_hierarchy
-                                            span(class="tag-label")!= classification.type_hierarchy.replace(/ /g, '&nbsp;')
-                                            span(class="tag-label-center")!= classification.class.replace(/ /g, '&nbsp;')
-                                        else 
-                                            span(class="tag-label")!= classification.class.replace(/ /g, '&nbsp;')
-                                        span(class="tag-confidence")= (classification.score*100).toFixed(2)+ "%"
+                                div(style='padding-bottom:15px')
+                                    div Classifier: 
+                                        span(class="bold")= classifier.name
+                                    each classification in classifier.classes    
+                                        span(class="tag watson") 
+                                            if classification.type_hierarchy
+                                                span(class="tag-label")!= classification.type_hierarchy.replace(/ /g, '&nbsp;')
+                                                span(class="tag-label-center")!= classification.class.replace(/ /g, '&nbsp;')
+                                            else 
+                                                span(class="tag-label")!= classification.class.replace(/ /g, '&nbsp;')
+                                            span(class="tag-confidence")= (classification.score*100).toFixed(2)+ "%"
                     else if body.analysis.image_classify.status
                         div
                             div!= "<b>" + body.analysis.image_classify.status + ":</b> " + body.analysis.image_classify.statusInfo
@@ -118,7 +119,7 @@ div(class="container-fluid" )
                 div(class="col-md-3")
                     h4 Watson Facial Recognition
                 div(class="col-md-9")
-                    if body.analysis.face_detection.images && body.analysis.face_detection.images[0].faces.length > 0
+                    if body.analysis.face_detection.images && body.analysis.face_detection.images[0].faces && body.analysis.face_detection.images[0].faces.length > 0
                         table(class="table table-condensed")
                             tr
                                 th(style="border-top:none;") &nbsp;
