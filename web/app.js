@@ -153,10 +153,10 @@ app.post('/:id?/retrain/:posneg?/:classifierId?/:classifierClass?', function (re
                         };
 
                         if (posneg == "positive") {
-                            formData[classifierClass + "_positive_examples"] = fs.createReadStream("./training/tennis_positive.zip");
+                            formData[classifierClass + "_positive_examples"] = fs.createReadStream(zipFile);
                         }
                         else {
-                            formData[classifierClass + "_positive_examples"] = fs.createReadStream(zipFile);
+                            formData[classifierClass + "_positive_examples"] = fs.createReadStream("./training/tennis_positive.zip");
                             formData["negative_examples"] = fs.createReadStream(zipFile);
                         }
                         var url = "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/classifiers/" + classifierId +"?api_key=" + vrCredentials.api_key + "&version=2016-05-20";
