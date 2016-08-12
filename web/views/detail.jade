@@ -1,7 +1,9 @@
 include ./header.jade
 
-link(rel="stylesheet" href="https://js.arcgis.com/4.0beta3/esri/css/main.css")
-script(src="https://js.arcgis.com/4.0beta3/")
+
+<script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
+<script src='/public/scripts/map-features.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet' />
 
 div(class="container-fluid" )
     div(class="col-md-7 imagecell") 
@@ -42,50 +44,21 @@ div(class="container-fluid" )
                     div(id="map" class="mapcell")   
         
         script.
-            require([
-                "esri/Map",
-                "esri/views/MapView",
-                "esri/symbols/PictureMarkerSymbol",
-                "esri/layers/GraphicsLayer",
-                "esri/Graphic",
-                "esri/geometry/Point",
-                "dojo/domReady!"
-            ],
-            function(Map, MapView, PictureMarkerSymbol, GraphicsLayer, Graphic, Point) {
-                
-                var url = window.location.href;
-                var tokens = url.split("/");
-                var prefix = tokens[0] + "//" + tokens[2]
-                    
-                var map = new Map({
-                    basemap: "topo",
-                });
-                
-                var view = new MapView({
-                    container: "map",
-                    map: map,
-                    scale: 5000,
-                    center: [!{body.longitude}, !{body.latitude}]
-                });
-                
-                var graphicsLayer = new GraphicsLayer();
-                map.add(graphicsLayer);
-                
-                var geometry = new Point({
-                            "longitude": !{body.longitude},
-                            "latitude": !{body.latitude}})
-                            
-                var symbol = new PictureMarkerSymbol({ "angle": !{body.cameraHeading},
-                            "xoffset": 0,
-                            "yoffset": 0,
-                            "url": prefix + "/public/assets/map-marker.png",
-                            "contentType": "image/png",
-                            "width": 32,
-                            "height": 32
-                    })
-                    
-                graphicsLayer.add(new Graphic(geometry, symbol))
+            var map = L.mapbox.map('map', 'mapbox.streets').setView([!{body.latitude}, !{body.longitude}], 14);
+
+            var marker = L.rotatedMarker(new L.LatLng(!{body.latitude},!{body.longitude}), {
+            icon: L.icon({
+                iconUrl:"/public/assets/map-marker.png",
+                iconSize: [32, 32], // size of the icon
+                iconAnchor: [16, 16], // point of the icon which will correspond to marker's location
+                popupAnchor: [0, -25] // point from which the popup should open relative to the iconAnchor
+            }),
+            draggable: false
             });
+            marker.options.angle = !{body.cameraHeading};//  * (180 / Math.PI);
+
+            marker.addTo(map);
+
  
     div(class="col-md-5 analysisContainer")  
 
