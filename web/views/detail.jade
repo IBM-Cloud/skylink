@@ -74,14 +74,18 @@ div(class="container-fluid" )
                                 div(style='padding-bottom:15px')
                                     div Classifier: 
                                         span(class="bold")= classifier.name
-                                    each classification in classifier.classes    
-                                        span(class="tag watson") 
-                                            if classification.type_hierarchy
-                                                span(class="tag-label")!= classification.type_hierarchy.replace(/ /g, '&nbsp;')
-                                                span(class="tag-label-center")!= classification.class.replace(/ /g, '&nbsp;')
-                                            else 
-                                                span(class="tag-label")!= classification.class.replace(/ /g, '&nbsp;')
-                                            span(class="tag-confidence")= (classification.score*100).toFixed(2)+ "%"
+                                    each classification in classifier.classes  
+                                        div  
+                                            span(class="tag watson") 
+                                                if classification.type_hierarchy
+                                                    span(class="tag-label")!= classification.type_hierarchy.replace(/ /g, '&nbsp;')
+                                                    span(class="tag-label-center")!= classification.class.replace(/ /g, '&nbsp;')
+                                                else 
+                                                    span(class="tag-label")!= classification.class.replace(/ /g, '&nbsp;')
+                                                span(class="tag-confidence")= (classification.score*100).toFixed(2)+ "%"
+                                            if classifier.name != "default"
+                                                span(class="btn-group" role="group" id=classifier.classifier_id + "_" + classification.class) 
+                                                    button(type="button" class="btn btn-xs btn-success glyphicon glyphicon-thumbs-up" alt="The analysis was correct" id="positive" data-id=body._id data-classifier-class=classification.class data-classifier-id=classifier.classifier_id) 
                     else if body.analysis.image_classify.status
                         div
                             div!= "<b>" + body.analysis.image_classify.status + ":</b> " + body.analysis.image_classify.statusInfo
@@ -117,6 +121,9 @@ div(class="container-fluid" )
             div(class="row callout error")
                 h4 Analysis has not been performed on this record yet.   
     
-div(class="col-md-12")  &nbsp;               
+div(class="col-md-12")  &nbsp;  
+
+
+<script src='/public/scripts/retraining.js'></script>            
             
 include ./footer.jade             
