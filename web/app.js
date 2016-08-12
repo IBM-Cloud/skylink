@@ -92,7 +92,7 @@ app.post('/:id?/retrain/:posneg?/:classifierId?/:classifierClass?', function (re
     var classifierClass = req.params.classifierClass;
     var currentTime = new Date().getTime()
 
-    if (posneg == "positive"){
+    if (posneg == "positive" || posneg == "negative"){
         //console.log(id, posneg, classifierId, classifierClass)
         console.log("retraining")
 
@@ -151,8 +151,14 @@ app.post('/:id?/retrain/:posneg?/:classifierId?/:classifierClass?', function (re
                             api_key:vrCredentials.api_key,
                             version:"2016-05-20"
                         };
-                        formData[classifierClass + "_positive_examples"] = fs.createReadStream(zipFile)
 
+                        if (posneg == "positive") {
+                            formData[classifierClass + "_positive_examples"] = fs.createReadStream("./training/tennis_positive.zip");
+                        }
+                        else {
+                            formData[classifierClass + "_positive_examples"] = fs.createReadStream(zipFile);
+                            formData["negative_examples"] = fs.createReadStream(zipFile);
+                        }
                         var url = "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/classifiers/" + classifierId +"?api_key=" + vrCredentials.api_key + "&version=2016-05-20";
 
                         request.post({url:url, formData: formData}, function optionalCallback(err, httpResponse, body) {

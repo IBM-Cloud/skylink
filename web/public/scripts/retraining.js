@@ -2,6 +2,7 @@
 
 $(document).ready(function(){
     $("#positive").click(handleRetrain);
+    $("#negative").click(handleRetrain);
 })
 
 

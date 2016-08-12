@@ -86,6 +86,8 @@ div(class="container-fluid" )
                                             if classifier.name != "default"
                                                 span(class="btn-group" role="group" id=classifier.classifier_id + "_" + classification.class) 
                                                     button(type="button" class="btn btn-xs btn-success glyphicon glyphicon-thumbs-up" alt="The analysis was correct" id="positive" data-id=body._id data-classifier-class=classification.class data-classifier-id=classifier.classifier_id) 
+                                                    button(type="button" class="btn btn-xs btn-danger glyphicon glyphicon-thumbs-down" alt="The analysis was incorrect" id="negative" data-id=body._id data-classifier-class=classification.class data-classifier-id=classifier.classifier_id) 
+                                                
                     else if body.analysis.image_classify.status
                         div
                             div!= "<b>" + body.analysis.image_classify.status + ":</b> " + body.analysis.image_classify.statusInfo
