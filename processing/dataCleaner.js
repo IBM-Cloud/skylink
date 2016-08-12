@@ -48,6 +48,11 @@ function mainImpl(args, mainCallback) {
     var cloudant = require("cloudant")(args.cloudantUrl);
     var db = cloudant.db.use(args.cloudantDbName);
 
+    var incremental = false;
+    if (args["incremental"]) {
+        incremental = true;
+    }
+
     db.view( 'overwatch.images',  'overwatch.images', function(err, body) {
     //db.list(function(err, body) {
         console.log("row count: " + body.rows.length)
@@ -63,28 +68,33 @@ function mainImpl(args, mainCallback) {
                 console.log("-------------------------------------------------");
                 
                 var doc = row.key
+                
+                if (!incremental || (!doc.analysis && incremental)) {
 
-                if (doc.analysis)
-                    delete doc.analysis
+                    if (doc.analysis)
+                        delete doc.analysis
 
-                var att = doc['_attachments']
-                doc._attachments = {
-                    'image.jpg': att['image.jpg']
-                }
-                console.log(doc)
+                    var att = doc['_attachments']
+                    doc._attachments = {
+                        'image.jpg': att['image.jpg']
+                    }
+                    console.log(doc)
 
-                waterfallRequets.push(function(callback){
-                    db.insert(doc, function(err, insertBody) {
-                        completedRequests++;
-                        console.log("completed " + completedRequests)
+                    waterfallRequets.push(function(callback){
+                        db.insert(doc, function(err, insertBody) {
+                            completedRequests++;
+                            console.log("completed " + completedRequests)
 
-                        if (err) {
-                            callback(err);
-                        } else {
-                            callback(null);
-                        }
+                            if (err) {
+                                console.log("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                                console.log(err)
+                                callback(err);
+                            } else {
+                                callback(null);
+                            }
+                        })
                     })
-                })
+                }
 
                 setTimeout( function(){
                     
@@ -92,6 +102,7 @@ function mainImpl(args, mainCallback) {
             });
 
             async.waterfall(waterfallRequets, function (err, fileName) {
+                console.log("DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 whisk.done()
             });
         }

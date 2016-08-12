@@ -200,8 +200,17 @@ function processFaces(document, fileName, db, analysis, processCallback) {
         console.log("analysis has face_detection");
             
         var faceIndex = -1,
-            facesToProcess = analysis.face_detection.images[0].faces,
+            facesToProcess = [],
             latestDocument = document;
+
+        if (analysis.face_detection.images){
+          if (analysis.face_detection.images.length > 0) {
+            var images = analysis.face_detection.images;
+            if (images[0].faces) { 
+              facesToProcess = analysis.face_detection.images[0].faces;
+            }
+          }
+        }
         
         //iteratively create images for each face that is detected
         var inProgressCallback = function (err) {
@@ -428,6 +437,9 @@ function analyzeImage(args, fileName, analyzeCallback) {
             function (err, response, body) {
               if (err) {
                 console.log("Face Detection", err);
+                analysis.face_detection = {
+                  error:err
+                }
               } else {
                 console.log("Face Detection:")
                 console.log(body)
@@ -438,13 +450,14 @@ function analyzeImage(args, fileName, analyzeCallback) {
     },
     function (callback) {
         // Call Watson Visual Recognition Image Classifier passing the image in the request
+        console.log('CLASSIFIERS:' + args.watsonClassifiers)
         fs.createReadStream(fileName).pipe(
           request({
               method: "POST",
               url: "https://gateway-a.watsonplatform.net" +
                 "/visual-recognition/api/v3/classify" +
                 "?api_key=" + args.watsonKey +
-                "&version=2016-05-20",
+                "&version=2016-05-20&threshold=0.0&owners=me,IBM&classifier_ids=" + args.watsonClassifiers,
               headers: {
                 'Content-Length': fs.statSync(fileName).size
               },
@@ -453,9 +466,12 @@ function analyzeImage(args, fileName, analyzeCallback) {
             function (err, response, body) {
               if (err) {
                 console.log("Image Classifier", err);
+                analysis.image_classify = {
+                  error:err
+                }
               } else {
                 console.log("Image Classifier:")
-                console.log(body)
+                console.log(JSON.stringify(body))
                 analysis.image_classify = body;
               }
               callback(null);
@@ -478,6 +494,9 @@ function analyzeImage(args, fileName, analyzeCallback) {
             function (err, response, body) {
               if (err) {
                 console.log("Recognize Text", err);
+                analysis.recognize_text = {
+                  error:err
+                }
               } else {
                 console.log("Recognize Text:")
                 console.log(body)

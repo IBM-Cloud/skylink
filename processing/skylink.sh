@@ -41,8 +41,9 @@ function install() {
   echo "Adding VCAP_SERVICES as parameter"
   wsk package update overwatch\
     -p cloudantUrl https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host\
+    -p cloudantDbName $CLOUDANT_db\
     -p watsonKey $WATSON_key\
-    -p cloudantDbName $CLOUDANT_db
+    -p watsonClassifiers $WATSON_classifiers
     
   # we will need to listen to cloudant event
   echo "Binding cloudant"
