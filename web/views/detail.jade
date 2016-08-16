@@ -30,13 +30,16 @@ div(class="container-fluid" )
                 div(class="col-md-8 nopad")= body.heading
                 div(class="col-md-4 bold nopad") Camera:
                 div(class="col-md-8 nopad")
-                    div(class="col-md-6 nopad")!= "Head: " + body.cameraHeading + " <br/>Pitch: " + body.cameraPitch
-                    div(class="col-md-6 relative")
-                        div(class="arrow-container")
-                            img(src="/public/assets/arrow-horizontal.png" class="arrow")
-                            img(src="/public/assets/arrow-active.png" class="arrow" style="transform: rotate(" + -body.cameraPitch + "deg)")
-                        div(class=" heading-container")
-                            img(src="/public/assets/map-marker.png" class="arrow" style="top:8px; transform: rotate(" + (body.cameraHeading-0) + "deg)")
+                    if body.cameraPitch == 0.0 && body.cameraHeading == 0.0 && body.heading != 0.0
+                        span(class="warn") Camera heading and pitch unavailable.
+                    else 
+                        div(class="col-md-6 nopad")!= "Head: " + body.cameraHeading + " <br/>Pitch: " + body.cameraPitch
+                        div(class="col-md-6 relative")
+                            div(class="arrow-container")
+                                img(src="/public/assets/arrow-horizontal.png" class="arrow")
+                                img(src="/public/assets/arrow-active.png" class="arrow" style="transform: rotate(" + -body.cameraPitch + "deg)")
+                            div(class=" heading-container")
+                                img(src="/public/assets/map-marker.png" class="arrow" style="top:8px; transform: rotate(" + (body.cameraHeading-0) + "deg)")
     
         div
             div(class="panel panel-default")
@@ -55,8 +58,9 @@ div(class="container-fluid" )
             }),
             draggable: false
             });
-            marker.options.angle = !{body.cameraHeading};//  * (180 / Math.PI);
-
+            
+            marker.options.angle = !{(body.cameraPitch == 0.0 && body.cameraHeading == 0.0 && body.heading != 0.0) ? body.heading : body.cameraHeading};
+            
             marker.addTo(map);
 
  
