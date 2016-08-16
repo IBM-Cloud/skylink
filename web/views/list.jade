@@ -6,7 +6,7 @@ div(class="container-fluid")
             a(href="./" + row.id)
                 div(class="callout" style="padding:2px;")
                     p= row.key.timestamp
-                    img(src="./" + row.id + "/attachments/thumbnail.jpg" style="max-width:100%; width:100%; ")
+                    img(src="/public/assets/placeholder.jpg" class="lazy" data-original="./" + row.id + "/attachments/thumbnail.jpg" style="max-width:100%; width:100%; min-height:210px;")
                     if row.key.analysis == undefined
                         p Analyzed: NO
                     else
@@ -15,5 +15,11 @@ div(class="container-fluid")
                                 span= ", " + row.key.analysis.size.width + " x " + row.key.analysis.size.height
 
 include ./footer.jade
+
+<script src='/public/scripts/jquery.lazyload.js'></script>
+script.
+    $(document).ready(function() {
+        $("img.lazy").lazyload();
+    });
                
                         
