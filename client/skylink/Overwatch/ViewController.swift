@@ -217,8 +217,7 @@ class ViewController: DJIBaseViewController, DJICameraDelegate, DJIFlightControl
         updatePosition()
     }
     
-    
-    func gimbalController(controller: DJIGimbal, didUpdateGimbalState gimbalState: DJIGimbalState) {
+    func gimbal(controller: DJIGimbal, didUpdateGimbalState gimbalState: DJIGimbalState) {
         //debug("Gimbal attitude\npitch: \(gimbalState.attitudeInDegrees.pitch)\nroll: \(gimbalState.attitudeInDegrees.roll)\nyaw:   \(gimbalState.attitudeInDegrees.yaw)")
         
         self.currentGimbalPitch = gimbalState.attitudeInDegrees.pitch
