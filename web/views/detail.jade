@@ -1,0 +1,135 @@
+include ./header.jade
+
+
+<script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
+<script src='/public/scripts/map-features.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet' />
+
+div(class="container-fluid" )
+    div(class="col-md-7 imagecell") 
+        div(class="panel panel-default")
+            div(class="panel-heading")
+                a(target="_blank" href="./" + body._id + "/attachments/image.jpg" class="white") (view full resolution in a new window)
+            div(class="panel-body nopad")
+                img(src="./" + body._id + "/attachments/image.jpg" style="max-width:100%")
+           
+    div(class="col-md-5 mapcell")
+        div(class="panel panel-default")
+            div(class="panel-heading")= "Aircraft: " + body.aircraft
+            
+            div(class="panel-body mapcell")
+                div(class="col-md-4 bold nopad") Timestamp:
+                div(class="col-md-8 nopad")= body.timestamp
+                div(class="col-md-4 bold nopad") Longitude:
+                div(class="col-md-8 nopad")= body.longitude
+                div(class="col-md-4 bold nopad") Latitude:
+                div(class="col-md-8 nopad")= body.latitude
+                div(class="col-md-4 bold nopad") Altitude:
+                div(class="col-md-8 nopad")= body.altitude + " (m)"
+                div(class="col-md-4 bold nopad") Heading:
+                div(class="col-md-8 nopad")= body.heading
+                div(class="col-md-4 bold nopad") Camera:
+                div(class="col-md-8 nopad")
+                    if body.cameraPitch == 0.0 && body.cameraHeading == 0.0 && body.heading != 0.0
+                        span(class="warn") Camera heading and pitch unavailable.
+                    else 
+                        div(class="col-md-6 nopad")!= "Head: " + body.cameraHeading + " <br/>Pitch: " + body.cameraPitch
+                        div(class="col-md-6 relative")
+                            div(class="arrow-container")
+                                img(src="/public/assets/arrow-horizontal.png" class="arrow")
+                                img(src="/public/assets/arrow-active.png" class="arrow" style="transform: rotate(" + -body.cameraPitch + "deg)")
+                            div(class=" heading-container")
+                                img(src="/public/assets/map-marker.png" class="arrow" style="top:8px; transform: rotate(" + (body.cameraHeading-0) + "deg)")
+    
+        div
+            div(class="panel panel-default")
+                div(class="panel-body nopad")
+                    div(id="map" class="mapcell")   
+        
+        script.
+            var map = L.mapbox.map('map', 'mapbox.streets').setView([!{body.latitude}, !{body.longitude}], 14);
+
+            var marker = L.rotatedMarker(new L.LatLng(!{body.latitude},!{body.longitude}), {
+            icon: L.icon({
+                iconUrl:"/public/assets/map-marker.png",
+                iconSize: [32, 32], // size of the icon
+                iconAnchor: [16, 16], // point of the icon which will correspond to marker's location
+                popupAnchor: [0, -25] // point from which the popup should open relative to the iconAnchor
+            }),
+            draggable: false
+            });
+            
+            marker.options.angle = !{(body.cameraPitch == 0.0 && body.cameraHeading == 0.0 && body.heading != 0.0) ? body.heading : body.cameraHeading};
+            
+            marker.addTo(map);
+
+ 
+    div(class="col-md-5 analysisContainer")  
+
+        if body.analysis 
+        
+            div(class="row callout warning")
+                div(class="col-md-3") 
+                    h4 Watson Visual Recognition
+                div(class="col-md-9") 
+                    if body.analysis.image_classify.images && body.analysis.image_classify.images.length > 0
+                        each image in body.analysis.image_classify.images
+                            each classifier in image.classifiers
+                                div(style='padding-bottom:15px')
+                                    div Classifier: 
+                                        span(class="bold")= classifier.name
+                                    each classification in classifier.classes  
+                                        div  
+                                            span(class="tag watson") 
+                                                if classification.type_hierarchy
+                                                    span(class="tag-label")!= classification.type_hierarchy.replace(/ /g, '&nbsp;')
+                                                    span(class="tag-label-center")!= classification.class.replace(/ /g, '&nbsp;')
+                                                else 
+                                                    span(class="tag-label")!= classification.class.replace(/ /g, '&nbsp;')
+                                                span(class="tag-confidence")= (classification.score*100).toFixed(2)+ "%"
+                                            if classifier.name != "default"
+                                                span(class="btn-group" role="group" id=classifier.classifier_id + "_" + classification.class) 
+                                                    button(type="button" class="btn btn-xs btn-success glyphicon glyphicon-thumbs-up" alt="The analysis was correct" id="positive" data-id=body._id data-classifier-class=classification.class data-classifier-id=classifier.classifier_id) 
+                                                    button(type="button" class="btn btn-xs btn-danger glyphicon glyphicon-thumbs-down" alt="The analysis was incorrect" id="negative" data-id=body._id data-classifier-class=classification.class data-classifier-id=classifier.classifier_id) 
+                                                
+                    else if body.analysis.image_classify.status
+                        div
+                            div!= "<b>" + body.analysis.image_classify.status + ":</b> " + body.analysis.image_classify.statusInfo
+                    else 
+                        span No tags were recognized in this image.
+            
+            div(class="row callout warning")
+                div(class="col-md-3")
+                    h4 Watson Facial Recognition
+                div(class="col-md-9")
+                    if body.analysis.face_detection.images && body.analysis.face_detection.images[0].faces && body.analysis.face_detection.images[0].faces.length > 0
+                        table(class="table table-condensed")
+                            tr
+                                th(style="border-top:none;") &nbsp;
+                                th(style="border-top:none;") Classification
+                                th(style="border-top:none;") Confidence
+                            each face, index in body.analysis.face_detection.images[0].faces
+                                tr
+                                    td(style="width:100px" rowspan="2")
+                                        img(src="./" + body._id + "/attachments/face" + index + ".jpg" style="width:100px")
+                                    td= face.gender.gender
+                                    td= (face.gender.score*100).toFixed(2)
+                                tr
+                                    td= face.age.min +" - "+ face.age.max
+                                    td= (face.age.score*100).toFixed(2)
+                    else if body.analysis.face_detection.status
+                        div
+                            div!= "<b>" + body.analysis.face_detection.status + ":</b> " + body.analysis.face_detection.statusInfo
+                    else
+                        span No faces were recognized in this image.
+            
+        else   
+            div(class="row callout error")
+                h4 Analysis has not been performed on this record yet.   
+    
+div(class="col-md-12")  &nbsp;  
+
+
+<script src='/public/scripts/retraining.js'></script>            
+            
+include ./footer.jade             
