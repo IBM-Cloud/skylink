@@ -41,7 +41,7 @@ All development was done using a [DJI Phantom 3 Advanced][dji_phantom] aircraft,
 
 # Bluemix Services
 
-Create a new Node.js app on Bluemix, and configure it to use the following services:
+Create a new Swift app on Bluemix, and configure it to use the following services:
 
 * [Cloudant NoSQL Database][cloudant]
 * [Watson Visual Recognition][watson_visual_recognition]
@@ -205,7 +205,7 @@ When data is saved into Cloduant, the OpenWhisk actions will automatically be in
 
 ## Web application
 
-Either use the Bluemix web user intefact to view debug logs, or use the Cloud Foundry CLI to look view live logs for the Node.js application running on Bluemix:
+Either use the Bluemix web user intefact to view debug logs, or use the Cloud Foundry CLI to look view live logs for the Swift application running on Bluemix:
 ```
 cf logs <appname>
 ```
