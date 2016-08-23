@@ -149,20 +149,26 @@ a .callout:hover {
 .tag-label {
     padding: 4px;
     padding-right:8px;
-    border-right:1px solid #777;
+    white-space: nowrap;
 }
 
 .tag-label-center {
     padding: 4px;
-    padding-right:8px;
+    padding-left:8px;
+    padding-right:4px;
     border-left:1px solid #CCC;
-    border-right:1px solid #777;
+    white-space: nowrap;
 }
 
 .tag-confidence {
     padding: 4px;
     padding-left:8px;
     border-left:1px solid #CCC;
+    white-space: nowrap;
+}
+
+.nowrap {
+    white-space: nowrap;
 }
 
 .white,
@@ -190,7 +196,13 @@ a .callout:hover {
     min-height: 1px;
     padding: 15px;
     float:left;
+    cursor: pointer;
 }
+.listCell .callout:hover {
+    border-color:#1d3649;
+    background: #DDD;
+}
+
 @media (max-width: 640) {
     .listCell {
         width:100%;
@@ -200,4 +212,8 @@ a .callout:hover {
 .listCell img {
     
     max-height:210px;
+}
+
+#content {
+    min-height:500px;
 }

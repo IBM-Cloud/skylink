@@ -35,38 +35,47 @@ function usage() {
 function install() {
   echo -e "${YELLOW}Installing..."
   
-  echo "Creating overwatch package"
-  wsk package create overwatch
+  echo "Creating skylink-swift package"
+  wsk package create skylink-swift
   
   echo "Adding VCAP_SERVICES as parameter"
-  wsk package update overwatch\
+  wsk package update skylink-swift\
     -p cloudantUrl https://$CLOUDANT_username:$CLOUDANT_password@$CLOUDANT_host\
+    -p cloudantUsername $CLOUDANT_username\
+    -p cloudantPassword $CLOUDANT_password\
+    -p cloudantHost $CLOUDANT_host\
     -p cloudantDbName $CLOUDANT_db\
-    -p watsonKey $WATSON_key\
-    -p watsonClassifiers $WATSON_classifiers
+    -p targetNamespace $CURRENT_NAMESPACE\
+    -p watsonKey $WATSON_key
     
   # we will need to listen to cloudant event
   echo "Binding cloudant"
   # /whisk.system/cloudant
   wsk package bind /whisk.system/cloudant \
-    overwatch-cloudant\
+    skylink-swift-cloudant\
     -p username $CLOUDANT_username\
     -p password $CLOUDANT_password\
+    -p dbname $CLOUDANT_db\
     -p host $CLOUDANT_host
 
   echo "Creating trigger"
-  wsk trigger create overwatch-cloudant-update-trigger --feed overwatch-cloudant/changes -p dbname $CLOUDANT_db -p includeDoc true
+  wsk trigger create skylink-swift-cloudant-update-trigger --feed skylink-swift-cloudant/changes -p dbname $CLOUDANT_db -p includeDoc true
 
-  echo "Creating actions"
-  wsk action create overwatch/analysis analysis.js
-  wsk action create overwatch/dataCleaner dataCleaner.js
-  
+
+  echo "Creating analysis actions"
+
   echo "Creating change listener action"
-  wsk action create overwatch-cloudant-changelistener changelistener.js\
+   wsk action create --kind swift:3 skylink-swift-cloudant-changelistener actions/ChangeListener.swift -t 300000\
    -p targetNamespace $CURRENT_NAMESPACE
-    
+
   echo "Enabling change listener"
-  wsk rule create overwatch-rule overwatch-cloudant-update-trigger overwatch-cloudant-changelistener --enable
+  wsk rule create skylink-swift-rule skylink-swift-cloudant-update-trigger skylink-swift-cloudant-changelistener --enable
+  
+  wsk action create --kind swift:3 skylink-swift/watsonAnalysis actions/WatsonVisualRecognition.swift -t 300000
+  wsk action create --kind swift:3 skylink-swift/cloudantRead actions/CloudantRead.swift -t 300000
+  wsk action create --kind swift:3 skylink-swift/cloudantWrite actions/CloudantWrite.swift -t 300000
+  wsk action create --kind swift:3 skylink-swift/processImage actions/Orchestrator.swift -t 300000
+  wsk action create skylink-swift/generateThumbnails actions/GenerateThumbnail.js -t 300000
   
   echo -e "${GREEN}Install Complete${NC}"
   wsk list
@@ -75,23 +84,27 @@ function install() {
 function uninstall() {
   echo -e "${RED}Uninstalling..."
   
-  echo "Removing actions..."
-  wsk action delete overwatch/analysis
-  wsk action delete overwatch/dataCleaner
+  echo "Removing current actions..."
+  wsk action delete skylink-swift/watsonAnalysis
+  wsk action delete skylink-swift/cloudantRead
+  wsk action delete skylink-swift/cloudantWrite
+  wsk action delete skylink-swift/processImage
+  wsk action delete skylink-swift/generateThumbnails
   
-  echo "Removing rule..."
-  wsk rule disable overwatch-rule
-  wsk rule delete overwatch-rule
+  
+  echo "Removing rules..."
+  wsk rule disable skylink-swift-rule
+  wsk rule delete skylink-swift-rule
   
   echo "Removing change listener..."
-  wsk action delete overwatch-cloudant-changelistener
+  wsk action delete skylink-swift-cloudant-changelistener
   
   echo "Removing trigger..."
-  wsk trigger delete overwatch-cloudant-update-trigger
-  
+  wsk trigger delete skylink-swift-cloudant-update-trigger
+
   echo "Removing packages..."
-  wsk package delete overwatch-cloudant
-  wsk package delete overwatch
+  wsk package delete skylink-swift-cloudant
+  wsk package delete skylink-swift
   
   echo -e "${GREEN}Uninstall Complete${NC}"
   wsk list

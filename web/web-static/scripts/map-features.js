@@ -1,7 +1,7 @@
 
 //put your mapbox api token here
 //get an api token from: https://www.mapbox.com/help/create-api-access-token/
-L.mapbox.accessToken = 'mapbox_api_token_goes_here';
+L.mapbox.accessToken = 'pk.eyJ1IjoiYW10cmljZSIsImEiOiJjaXJxcnk5b2kwaGlzZmttNmx6NmJ2cnUwIn0.Dmm3imuypGoQ5d2s_JS3ug';
 
 
 // MIT-licensed code by Benjamin Becquet
@@ -27,3 +27,22 @@ L.rotatedMarker = function(pos, options) {
     return new L.RotatedMarker(pos, options);
 };
 
+
+function loadMap(document) {
+    var map = L.mapbox.map('map', 'mapbox.streets').setView([document.latitude, document.longitude], 14);
+
+    var marker = L.rotatedMarker(new L.LatLng(document.latitude, document.longitude), {
+        icon: L.icon({
+            iconUrl:"/static/assets/map-marker.png",
+            iconSize: [32, 32], // size of the icon
+            iconAnchor: [16, 16], // point of the icon which will correspond to marker's location
+            popupAnchor: [0, -25] // point from which the popup should open relative to the iconAnchor
+        }),
+        draggable: false
+    });
+    
+    var angle = document.hideCameraDetail ? document.heading : document.cameraHeading;
+
+    marker.options.angle = angle;
+    marker.addTo(map);
+}

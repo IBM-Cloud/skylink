@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <title>skylink - powered by Bluemix, OpenWhisk, Watson, &amp; DJI Drones</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous" />
+    <link rel="stylesheet" href='./css/index.css' />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.2.1/mustache.js"></script>
+    <script src="./scripts/app.js"></script>
+    <script src="/static/scripts/jquery.lazyload.js"></script>
+    <script src="https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js"></script>
+    <script src="/static/scripts/map-features.js"></script>
+    <link href="https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css" rel='stylesheet' />
+</head>
+
+<body>
+    <div class="heading">
+        <h1 class='minimalpad'> 
+            <a href="/" id="headerLink">skylink-swift</a>
+        </h1>
+        <p>Your *swift* cognitive eye in the sky...</p>
+    </div>
+
+    <div id="content" class="container-fluid">
+        loading...
+    </div>
+
+
+    <div class="bottom-spacer"></div>
+
+    <div class='footer'>powered by IBM Bluemix</div> 
+
+</body>
+
+
+
+<script id="loadingTemplate" type="x-tmpl-mustache">
+<div class="progress">
+  <div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar"
+  aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+    loading...
+  </div>
+</div>
+</script>
+
+<script id="errorTemplate" type="x-tmpl-mustache">
+<div class="alert alert-danger">
+  {{error}}
+</div>
+</script>
+
+<script id="listTemplate" type="x-tmpl-mustache">
+{{#records}}
+  <div class="listCell" id="{{id}}" >
+    <div class="callout" style="padding:2px;">
+        <img src="/static/assets/placeholder.jpg" class="lazy" data-original="/detail/{{id}}/attachments/thumbnail.jpg" style="max-width:100%; width:100%; min-height:210px;" />
+        {{timestamp}}
+    </div>
+  </div>
+{{/records}}
+</script>
+
+<script id="detailTemplate" type="x-tmpl-mustache">
+<div class="container-fluid">
+    <div class="col-md-7 imagecell"> 
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a target="_blank" href="/detail/{{_id}}/attachments/image.jpg" class="white">(view full resolution in a new window)</a>
+            </div>
+            <div class="panel-body nopad">
+                <img src="/detail/{{_id}}/attachments/image.jpg" style="max-width:100%" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5 mapcell">
+        <div class="panel panel-default">
+            <div class="panel-heading">Aircraft: {{aircraft}}</div>
+            
+            <div class="panel-body mapcell">
+                <div class="col-md-4 bold nopad"> Timestamp:</div>
+                <div class="col-md-8 nopad"> {{timestamp}}</div>
+                <div class="col-md-4 bold nopad"> Longitude:</div>
+                <div class="col-md-8 nopad"> {{longitude}}</div>
+                <div class="col-md-4 bold nopad"> Latitude:</div>
+                <div class="col-md-8 nopad"> {{latitude}}</div>
+                <div class="col-md-4 bold nopad"> Altitude:</div>
+                <div class="col-md-8 nopad"> {{altitude}} (m)"</div>
+                <div class="col-md-4 bold nopad"> Heading:</div>
+                <div class="col-md-8 nopad"> {{heading}}</div>
+                <div class="col-md-4 bold nopad"> Camera:</div>
+                <div class="col-md-8 nopad")>
+                    {{#hideCameraDetail}}
+                        <span class="text-warning">Camera heading and pitch unavailable.</span>
+                    {{/hideCameraDetail}}
+                    {{^hideCameraDetail}}
+                        <div class="col-md-6 nopad")>Head: -{{cameraHeading}} <br/>Pitch: {{cameraPitch}}</div>
+                        <div class="col-md-6 relative">
+                            <div class="arrow-container">
+                                <img src="/static/assets/arrow-horizontal.png" class="arrow" />
+                                <img src="/static/assets/arrow-active.png" class="arrow" style="transform: rotate({{cameraPitch}}deg)" />
+                            </div>
+                            <div class=" heading-container">
+                                <img src="/static/assets/map-marker.png" class="arrow" style="top:8px; transform: rotate({{cameraHeading}}deg)" />
+                            </div>
+                        </div>
+                    {{/hideCameraDetail}}
+                </div>
+            </div>
+        </div>
+
+
+        <div>
+            <div class="panel panel-default">
+                <div class="panel-body nopad">
+                    <div id="map" class="mapcell"></div>    
+                </div>
+            </div> 
+        </div>
+
+        <div>  
+
+            {{#analysis}}
+            
+                <div class="row callout warning">
+                    <div class="col-md-3"> 
+                        <h4>Watson Visual Recognition</h4>
+                    </div> 
+                    <div class="col-md-9"> 
+                        {{#analysis.image_classify.images}}
+                            <div style='padding-bottom:15px'>
+                            {{#classifiers}}
+                                <div>
+                                    Classifier: 
+                                    <span class="bold">{{name}}</span>
+                                    {{#classes}}
+                                        <div class="nowrap">
+                                            <span class="tag watson nopad"> 
+                                                {{#type_hierarchy}}
+                                                    <span class="tag-label">{{type_hierarchy}}</span>
+                                                    <span class="tag-label-center">{{class}}</span>
+                                                {{/type_hierarchy}}
+                                                {{^type_hierarchy}}
+                                                    <span class="tag-label">{{class}}</span>
+                                                {{/type_hierarchy}}
+                                                <span class="tag-confidence">{{score}}</span>
+                                            </span>
+                                        </div>
+                                    {{/classes}}
+                                </div>
+                            {{/classifiers}}
+                            </div> 
+                        
+                        {{/analysis.image_classify.images}}
+
+                        {{#analysis.image_classify.status}}
+                            <div>
+                                <div><b>{{analysis.image_classify.status}}:</b>{{analysis.image_classify.statusInfo}}</div>
+                            </div>
+                        {{/analysis.image_classify.status}}
+
+                    </div> 
+                </div> 
+
+
+                <div class="row callout warning">
+                    <div class="col-md-3">
+                        <h4>Watson Facial Recognition</h4>
+                    </div>
+                    <div class="col-md-9">
+
+                        {{#analysis.face_detection.images}}
+                            <table class="table table-condensed">
+                                <tr>
+                                    <th style="border-top:none;"> &nbsp; </th>
+                                    <th style="border-top:none;"> Classification </th>
+                                    <th style="border-top:none;"> Confidence </th>
+                                </tr>
+                                {{#faces}}
+                                    <tr>
+                                        <td style="width:100px" rowspan="2">
+                                            <img src="/detail/{{_id}}/attachments/face{{index}}.jpg" style="width:100px" />
+                                        </td>
+                                        <td> {{gender.gender}} </td>
+                                        <td> {{gender.score}} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{age.min}} - {{age.max}}</td>
+                                        <td>{{age.score}}</td>
+                                    </tr>
+                                {{/faces}}
+                        {{/analysis.face_detection.images}}
+
+                        {{#analysis.face_detection.status}}
+                            <div>
+                                <div><b>{{analysis.face_detection.status}}:</b>{{analysis.face_detection.statusInfo}}</div>
+                            </div>
+                        {{/analysis.face_detection.status}}
+                       
+                    </div> 
+                </div> 
+            {{/analysis}}
+            {{^analysis}} 
+                <div class="row callout error">
+                    <h4>Analysis has not been performed on this record yet.</h4>
+                </div>   
+            {{/analysis}}
+            
+        </div>
+        <div class="col-md-12">&nbsp;</div>  
+    </div>
+</div>
+</script>
+
+</html>
