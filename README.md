@@ -1,15 +1,18 @@
 # skylink
-Skylink is a sample application that lets you connect a [DJI][dji] drone aircraft to the [IBM Cloud][bluemix] with near realtime image analysis leveraging [IBM Cloudant][cloudant], [OpenWhisk][openwhisk], [IBM Watson][watson_visual_recognition], and [Alchemy Vision][alchemy_vision].  
+
+## This is the *Swift* branch of skylink 
+
+Skylink is a sample application that lets you connect a [DJI][dji] drone aircraft to the [IBM Cloud][bluemix] with near realtime image analysis leveraging [IBM Cloudant][cloudant], [OpenWhisk][openwhisk], and [IBM Watson][watson_visual_recognition].  
 
 This is a proof of concept use case that demonstrates how low cost/commodity off-the-shelf consumer drones can be integrated into enterprise workflows immediately, leveraging existing technology and infrastructure.
 
-You can read more about the context and usage of this application in [this blog post on the Bluemix blog][bluemix_dw_blog_post], or by viewing [this free webinar][webinar] that walks through the entire solution.
-
-Check out the video below for a quick overview how the application works.    
+Check out the video below for a quick overview how the application works. 
  
  [![video poster image](./github-assets/video-poster.jpg)][youtbue_video]
 
 https://youtu.be/BHmo8oWENJo
+
+ *note: this video shows the node.js branch, not the swift branch of Skylink*
 
 
 ## General Architecture
@@ -17,7 +20,7 @@ The application connects a [DJI][dji] drone aircraft to [IBM Bluemix][bluemix] b
 
 ![screenshot of skylink app running on iPad](./github-assets/architecture.png)
 
-The app captures aircraft telemtry data and images (either full resolution images or video frame grabs) and stores them locally on the iPad using [Cloudant Sync][coudant_sync] - This prevents data loss if you are flying in an area without any network connectivity.  When there is data connectivity, the data is automatically replicated up to the [Cloudant][cloudant] service.  Saving data into Cloudant automatically triggers [OpenWhisk][openwhisk] actions to process the images and data using [Watson Visual Recognition][watson_visual_recognition] and [Alchmey Vision][alchemy_vision] services.  Once all the data has been processed, it is available through a web interface powered by Node.js running on [IBM Bluemix][bluemix]. 
+The app captures aircraft telemtry data and images (either full resolution images or video frame grabs) and stores them locally on the iPad using [Cloudant Sync][coudant_sync] - This prevents data loss if you are flying in an area without any network connectivity.  When there is data connectivity, the data is automatically replicated up to the [Cloudant][cloudant] service.  Saving data into Cloudant automatically triggers [OpenWhisk][openwhisk] actions to process the images and data using [Watson Visual Recognition][watson_visual_recognition] services.  Once all the data has been processed, it is available through a web interface powered by Kitura/Swift running on [IBM Bluemix][bluemix]. 
 
 ## The Aircraft
 
@@ -41,7 +44,6 @@ All development was done using a [DJI Phantom 3 Advanced][dji_phantom] aircraft,
 Create a new Node.js app on Bluemix, and configure it to use the following services:
 
 * [Cloudant NoSQL Database][cloudant]
-* [Alchemy API][alchemy_vision]
 * [Watson Visual Recognition][watson_visual_recognition]
 
 ![screenshot of bluemix app configuration](./github-assets/bluemix-app.jpg)
@@ -112,15 +114,14 @@ The OpenWhisk actions are automatically triggered by changes to the Cloudant dat
 * Data change invokes analysis actions
 * If the data is new &amp; not analyzed, it will follow this sequence:
     * Retrieve the complete document from Cloudant
-    * Retrieve the image attachment binary file
-    * Generate a thumbnail image
     * Analyze the image (in parallel):
-        * Alchemy Facial Recognition
-        * Alchemy Image Keywords
-        * Watson Visual Recognition
+        * Watson Visual Recognition Image Classification
+        * Watson Visual Recognition Face Detection
     * Write analysis results back to Cloudant
-    * Save the image thumbnail back to Cloudant
-    * Generate images for each detected face and save to Cloudant
+    * Generate a thumbnail image(s)
+        * Generate thumbnail for saved image
+        * Generate images for each detected face and save to Cloudant
+        * Save the image thumbnails back to Cloudant
 
 You must have the [OpenWhisk][openwhisk] CLI already installed.
 
@@ -135,35 +136,58 @@ There are also methods in the shell script to uninstall or reinstall these actio
 
 
 
-# Node.js Web Client
+# Swift/Kitura Web Client
 
-You can run the web applicaiton locally, or push it to your Node.js instance(s) on Bluemix.  All code for the Node.js app is contained within the ```web``` directory.
+The web server application is written in Swift and leverages the Kitura framework.  You can learn more about Kitura at:
+
+* https://github.com/IBM-Swift/Kitura
+* https://developer.ibm.com/swift/
+
+You can run the web applicaiton locally, or push it to your Swift application instance(s) on Bluemix.  All code for the Swift/Kitrua app is contained within the ```web``` directory.
 
 ![screenshot of skylink web data in the browser](./github-assets/web-client.jpg)
 
-### Running Node.js Locally
-To run the application locally, you first need to download dependencies by running:
+
+### The application currently uses the 6/20 developer snapshot of Swift 3, which can be downloaded from: https://swift.org/download/#using-downloads  
+
+### Running Locally
+To run the application locally, you first need to download dependencies and compile the app by running:
 ```
-npm install
+swift build
 ```
+
 
 *You only need to do this next step if you are running locally, you do not need to configure credentials if running on Bluemix.* 
-Next, add authentication credentials to the ```configuration.json``` file.  You can get these by clicking on the "Show Credentials" link for each service in your app on Bluemix.  In the old Bluemix interface these are on the main app landince screen.  In the new Bluemix interface, these are avilable under the "Connections" tab.  
+Next, add authentication credentials to the ```cloud_config.json``` file.  You can get these by clicking on the "Show Credentials" link for each service in your app on Bluemix (in the web UI).  In the old Bluemix interface these are on the main app landince screen.  In the new Bluemix interface, these are avilable under the "Connections" tab.  
 
-Launch the app:
+
+Then run the application:
+
 ```
-node app.js
+./.build/debug/Server
 ```
 
-### Running Node.js on Bluemix
-To run the Node.js application on Bluemix, you only need to push the code to the Bluemix applicaiton instance.
+You will see output similar to the following, so you know it is running:
+```
+ VERBOSE: init() Router.swift line 48 - Router initialized
+ INFO: init() Configuration.swift line 44 - Using configuration values from 'cloud_config.json'.
+ VERBOSE: Server main.swift line 60 - Defining routes for server...
+ VERBOSE: run() Kitura.swift line 66 - Staring Kitura framework...
+ VERBOSE: run() Kitura.swift line 68 - Starting an HTTP Server on port 8090...
+ INFO: listen(socket:port:) HTTPServer.swift line 137 - Listening on port 8090
+```
+
+### Running Swift/Kitrua apps on Bluemix
+To run the Swift/Kitrua application on Bluemix, you only need to push the code to the Bluemix applicaiton instance.
 From inside the ```web``` directory, run the following command to push the app up to Bluemix:
 
 ```
 cf push
 ```
 
-*This will use the app name configued within ```manifest.yml```*    
+*This will use the app name configued within ```manifest.yml```*   
+
+Note: The CloudFoudry buildpack is also configured inside of manifest.yml  
 
 # Contribute
 
