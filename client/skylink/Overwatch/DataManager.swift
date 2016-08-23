@@ -54,6 +54,7 @@ class DataManager: NSObject, CDTReplicatorDelegate {
         
         do {
         
+            //put your cloudant connection url here
             let s = ""
             
             let remoteDatabaseURL = NSURL(string: s)
