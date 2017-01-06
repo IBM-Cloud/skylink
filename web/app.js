@@ -188,7 +188,7 @@ app.post('/:id?/retrain/:posneg?/:classifierId?/:classifierClass?', function (re
 
 
 // Start listening
-var port = ( process.env.VCAP_APP_PORT || 3000 );
+var port = ( process.env.PORT || 3000 );
 app.listen( port );
 console.log( 'Application is listening at: ' + port );
 
